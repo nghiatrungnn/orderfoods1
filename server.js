@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json());
 app.use('/api', orderRoutes);
 app.use('/api/auth', authRoutes); 
