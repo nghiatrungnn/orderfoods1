@@ -33,6 +33,37 @@ const getOrders = async (req, res) => {
   }
 };
 
+// Cập nhật đơn hàng
+const updateOrder = async (req, res) => {
+  const { id } = req.params; // Lấy id từ tham số URL
+  const { foodItem, quantity, customerName, address, status, imageUrl, price } = req.body;
+
+  // Kiểm tra thông tin đầu vào
+  if (!foodItem || !quantity || !customerName || !address || !imageUrl || price === undefined) {
+    return res.status(400).send('Thiếu thông tin cần thiết.');
+  }
+
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(id, {
+      foodItem,
+      quantity,
+      customerName,
+      address,
+      status,
+      imageUrl,
+      price
+    }, { new: true }); // new: true để trả về đối tượng đã cập nhật
+
+    if (!updatedOrder) {
+      return res.status(404).send('Không tìm thấy đơn hàng.');
+    }
+    res.status(200).send(updatedOrder);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật đơn hàng:", error); // Log lỗi
+    res.status(500).send(error);
+  }
+};
+
 // Xóa đơn hàng
 const deleteOrder = async (req, res) => {
   const { id } = req.params; // Lấy id từ tham số URL
@@ -52,5 +83,6 @@ const deleteOrder = async (req, res) => {
 module.exports = {
   createOrder,
   getOrders,
-  deleteOrder // Xuất hàm deleteOrder
+  updateOrder,
+  deleteOrder
 };
